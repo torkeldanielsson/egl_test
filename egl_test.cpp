@@ -63,21 +63,28 @@ int main() {
 
       if (eglQueryDevices(MaxDevices, eglDevices, &numDevices)) {
 
-        printf("Detected %d EGL devices\n", numDevices);
+        printf("\nDetected %d EGL devices\n\n", numDevices);
 
         for (int deviceNum = 0; deviceNum < numDevices; ++deviceNum) {
           display = eglGetPlatformDisplay(EGL_PLATFORM_DEVICE_EXT,
                                           eglDevices[deviceNum], nullptr);
 
-          int major = 1;
-          int minor = 1;
+          int major = 0;
+          int minor = 0;
 
-          eglInitialize(display, &major, &minor);
+          printf("Initializing EGL Device %d\n", deviceNum);
 
-          printf("Displaying info for EGL Display on Device %d\n", deviceNum);
+          if (eglInitialize(display, &major, &minor)) {
+            printf("Successfully initialized EGL Device %d\n", deviceNum);
 
-          if (display != EGL_NO_DISPLAY) {
-            query_egl_display_data(display);
+            printf("Displaying info for EGL Display on Device %d\n", deviceNum);
+
+            if (display != EGL_NO_DISPLAY) {
+              query_egl_display_data(display);
+            }
+
+          } else {
+            printf("FAILED to initialize EGL Device %d\n", deviceNum);
           }
           printf("\n");
         }
